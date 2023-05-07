@@ -13,7 +13,6 @@ def create_qr_code(data):
     qr.add_data(data)
     qr.make(fit=True)
 
-    # Create an image from the QR code object
-    img = qr.make_image(fill_color="black", back_color="white")
+    return qr
 
 

@@ -2,32 +2,36 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
+from io import BytesIO
 
-def send_email(qr_code):
-# Email settings
-    smtp_server = "smtp.mail.yahoo.com"
-    smtp_port = 587
-    from_email = "pierrekuh@yahoo.fr"
-    to_email = "hugo.fugeray@gmail.com"
-    email_password = "opoSmd9QNjvx*"
+def send_email(qr_code,receiver_email):
 
-    # Create an email message object
-    msg = MIMEMultipart()
-    msg["Subject"] = "QR Code"
-    msg["From"] = from_email
-    msg["To"] = to_email
 
-    # Add text content to the email
-    text_content = "Here is the QR code you requested:"
-    msg.attach(MIMEText(text_content))
+    img_buf = BytesIO()
+    img = qr_code.make_image(fill_color="black", back_color="white")
+    img.save(img_buf, format='PNG')
+    img_data = img_buf.getvalue()
 
-    # Attach the QR code image file to the email
-    msg.attach(qr_code)
+    # Email settings
+    gmail_user = "payetonkawadev@gmail.com"
+    gmail_password = "pynqzfxbvjnypmmn"
 
-    # Send the email
-    with smtplib.SMTP(smtp_server, smtp_port) as server:
-        server.starttls()  # Use TLS for security
-        server.login(from_email, email_password)
-        server.send_message(msg)
+    try:
+        msg = MIMEMultipart()
+        msg['From'] = gmail_user
+        msg['To'] = receiver_email
+        msg['Subject'] = 'Your QR Code'
 
-    print("mail_sent with qr code :", qr_code)
+        body = 'Please find the attached QR code.'
+        msg.attach(MIMEText(body, 'plain'))
+
+        image = MIMEImage(img_data, name="qrcode.png", _subtype='png')
+        msg.attach(image)
+
+        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        server.login(gmail_user, gmail_password)
+        server.sendmail(gmail_user, receiver_email, msg.as_string())
+        server.quit()
+        print('Email sent!')
+    except Exception as e:
+        print(f'Error occurred: {e}')
