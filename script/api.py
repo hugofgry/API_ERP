@@ -4,8 +4,12 @@ from datetime import datetime, timedelta
 import jwt as pyjwt
 import db
 import secure
+from secure import TokenData
 import qr_code
 import mail
+import requests
+from fastapi import FastAPI, Depends, HTTPException
+
 
 app = FastAPI()
 security = HTTPBearer()
@@ -15,7 +19,7 @@ def read_root():
     return {"Hello": "World"}
 
 @app.post("/send_qr")
-async def send_qr(username,pwd,user_passphrase):
+async def send_qr(username,pwd):
 
     pwd_in_db = db.get_user_pwd(username)[0]
     print(pwd_in_db)
@@ -25,33 +29,26 @@ async def send_qr(username,pwd,user_passphrase):
         raise HTTPException(status_code=401, detail="Nom d'utilisateur ou mot de passe incorrect")
 
     else:
-        token = secure.generate_token(username,user_passphrase)
+        token = secure.generate_token(username)
         qr = qr_code.create_qr_code(token)
         mail.send_email(qr,"lamrani002@gmail.com")
 
     return "Email sent"
 
 
+
 # Endpoint protégé par un jeton
-@app.get("/data")
-async def protected_data(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    try:
-        # Extraire le jeton JWT de l'en-tête d'autorisation
-        token = credentials.credentials
+@app.get("/products")
+async def get_product(token_data: TokenData = Depends(secure.verify_jwt_token)):
 
-        # Décoder et vérifier le jeton JWT
-        payload = pyjwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+    url = "https://615f5fb4f7254d0017068109.mockapi.io/api/v1/products"
+    response = requests.get(url)
+    if response.status_code == 200:
+        # Parse the JSON data from the response
+        data = response.json()
 
-        # Vérifier que le jeton n'a pas expiré
-        expiration = datetime.fromtimestamp(payload["exp"])
-        if datetime.utcnow() > expiration:
-            raise HTTPException(status_code=401, detail="Le jeton d'authentification a expiré")
+    return data
 
-        # Renvoyer les données protégées
-        return {"data": "Ceci sont des données protégées!"}
-
-    except pyjwt.JWTError:
-        raise HTTPException(status_code=401, detail="Jeton d'authentification invalide")
 
 
 
