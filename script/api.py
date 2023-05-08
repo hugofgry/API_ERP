@@ -31,10 +31,9 @@ async def send_qr(username,pwd):
     else:
         token = secure.generate_token(username)
         qr = qr_code.create_qr_code(token)
-        mail.send_email(qr,"lamrani002@gmail.com")
+        mail.send_email(qr,"hugo.fugeray@gmail.com")
 
     return "Email sent"
-
 
 
 # Endpoint protégé par un jeton
@@ -50,6 +49,25 @@ async def get_product(token_data: TokenData = Depends(secure.verify_jwt_token)):
     return data
 
 
+@app.get("/validate-token")
+async def validate_token(authorization: str = Header(...)):
+    try:
+        scheme, token = authorization.split(" ")
+        if scheme.lower() != "bearer":
+            raise HTTPException(status_code=401, detail="Invalid authentication scheme.")
+    except ValueError:
+        raise HTTPException(status_code=401, detail="Invalid authorization header format.")
+    user = db.get_user_by_token(token)
+    if user is None:
+        raise HTTPException(status_code=401, detail="Invalid token.")
+    return {"token": token}
 
+@app.get("/products/{product_id}")
+async def get_product_by_id(product_id: int, token_data: TokenData = Depends(secure.verify_jwt_token)):
+    url = f"https://615f5fb4f7254d0017068109.mockapi.io/api/v1/products/{product_id}"
+    response = requests.get(url)
+    if response.status_code == 200: # Parse the JSON data from the response data = response.json() return data
+        data = response.json()
+    return data
 
 

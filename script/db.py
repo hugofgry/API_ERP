@@ -57,8 +57,15 @@ def get_users():
     cursor.execute("""SELECT * FROM Users """)
     result = cursor.fetchall()
     connection.close()
-
     return result
+
+
+def get_user_by_token(token):
+    connection, cursor = set_connection()
+    cursor.execute("""SELECT * FROM Users WHERE user_token = %s""", (token,))
+    user = cursor.fetchone()
+    connection.close()
+    return user
 
 # UPDATE----------------------------------------------------------------
 

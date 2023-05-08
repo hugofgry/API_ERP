@@ -12,7 +12,6 @@ def send_email(qr_code,receiver_email):
     img.save(img_buf, format='PNG')
     img_data = img_buf.getvalue()
 
-    # Email settings
     gmail_user = "payetonkawadev@gmail.com"
     gmail_password = "pynqzfxbvjnypmmn"
 

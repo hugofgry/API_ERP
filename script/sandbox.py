@@ -23,5 +23,4 @@ def get_users():
     return result
 
 
-
-db.insert_user("user_8","pwdtest2",4)
+print(get_users())

@@ -9,7 +9,7 @@ def create_qr_code(data):
         border=4,
     )
 
-    # Add the data to the QR code object
+
     qr.add_data(data)
     qr.make(fit=True)
 

@@ -3,8 +3,11 @@ import db
 from argon2 import PasswordHasher
 import jwt as pyjwt
 from pydantic import BaseModel
-from fastapi import HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Header
 
+import os
+import secrets
+from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
 
 
 
@@ -23,23 +26,28 @@ def generate_token(username: str) -> str:
 
     # Créer le jeton JWT en signant la charge utile avec la clé secrète
     token = pyjwt.encode(payload, pass_phrase, algorithm="HS256")
-    print("token généré pour l'user :" + username)
 
     # Stocker le jeton dans la db
     db.add_user_token(username,token)
-    print("token ajouté dans la db pour l'user :" + username)
 
     # Retourner le jeton en tant que chaîne de caractères
     return token
 
-def verify_jwt_token(token: str) -> TokenData:
+
+def verify_jwt_token(authorization: str = Header(...)) -> TokenData:
     try:
+        token = authorization.split(" ")[1]
         payload = pyjwt.decode(token, pass_phrase, algorithms="HS256")
+        # Reste de la fonction
         user_id = payload.get("sub")
         if user_id is None:
             raise HTTPException(status_code=401, detail="Invalid JWT token")
         token_data = TokenData(sub=user_id)
         return token_data
+    except ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="JWT token has expired")
+    except InvalidSignatureError:
+        raise HTTPException(status_code=401, detail="Invalid JWT signature")
     except pyjwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Invalid JWT token")
 
