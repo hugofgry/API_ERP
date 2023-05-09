@@ -9,7 +9,6 @@ import requests
 from fastapi import FastAPI, Depends, HTTPException, Header
 from typing import Optional
 
-
 app = FastAPI()
 security = HTTPBearer()
 

@@ -4,14 +4,18 @@ import argon2
 import jwt as pyjwt
 from pydantic import BaseModel
 from fastapi import FastAPI, Depends, HTTPException, Header
-
 import os
 import secrets
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
 
 
 TOKEN_EXPIRATION_TIME = datetime.timedelta(days=14)
-pass_phrase = "jesuisunefougere974"
+
+pass_phrase = os.environ.get("TOKEN_API_CRM")
+if not isinstance(pass_phrase, str):
+        pass_phrase = str(pass_phrase)
+
+
 
 class TokenData(BaseModel):
     sub: str
