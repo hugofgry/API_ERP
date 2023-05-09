@@ -67,3 +67,24 @@ async def get_product_by_id(product_id: int, token_data: TokenData = Depends(sec
     url = f"https://615f5fb4f7254d0017068109.mockapi.io/api/v1/products/{product_id}"
     data = get_external_api_data(url)
     return data
+
+
+@app.get("/products/search/{string}")
+async def get_product_by(name: str, price:str, token_data: TokenData = Depends(secure.verify_jwt_token)):
+    url = f"https://615f5fb4f7254d0017068109.mockapi.io/api/v1/products/"
+    data = get_external_api_data(url)
+
+    items = []
+
+    if name is not None
+        for element in data:
+            if element["name"] == name:
+                items.append(element)
+
+    elif price is not None:
+        for element in data:
+            if element["price"] == price:
+                items.append(element)
+
+    return items
+
