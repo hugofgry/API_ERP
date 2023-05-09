@@ -8,7 +8,7 @@ from secure import TokenData
 import qr_code
 import mail
 import requests
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Header
 
 
 app = FastAPI()

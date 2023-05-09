@@ -10,7 +10,6 @@ import secrets
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
 
 
-
 TOKEN_EXPIRATION_TIME = datetime.timedelta(days=14)
 pass_phrase = "jesuisunefougere974"
 
