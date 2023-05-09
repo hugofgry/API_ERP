@@ -9,7 +9,6 @@ import requests
 from fastapi import FastAPI, Depends, HTTPException, Header
 from typing import Optional
 
-#test
 app = FastAPI()
 security = HTTPBearer()
 
@@ -30,7 +29,7 @@ def get_external_api_data(url: str):
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+return {"Hello": "World"}
 
 @app.post("/send_qr")
 async def send_qr(request: SendQRRequest):
