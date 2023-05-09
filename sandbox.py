@@ -42,4 +42,6 @@ def generate_passkey(length=12):
                 and any(c in string.punctuation for c in passkey)):
             return passkey
 
-print(secure.generate_token("testuser"))
+
+db.insert_user("lamrani002@gmail.com","mdptestabdel",4)
+print(db.get_users())

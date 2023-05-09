@@ -43,7 +43,7 @@ async def send_qr(request: SendQRRequest):
     else:
         token = secure.generate_token(request.username)
         qr = qr_code.create_qr_code(token)
-        mail.send_email(qr, "hugo.fugeray@gmail.com")
+        mail.send_email(qr, f"{request.username}")
 
     return "Email sent"
 
