@@ -12,8 +12,8 @@ def send_email(qr_code,receiver_email):
     img.save(img_buf, format='PNG')
     img_data = img_buf.getvalue()
 
-    gmail_user = "payetonkawadev@gmail.com"
-    gmail_password = "pynqzfxbvjnypmmn"
+    gmail_user = "payetonkawadeveloppeurs@gmail.com"
+    gmail_password = "jvgxdzpyebfsjhde"
 
     try:
         msg = MIMEMultipart()
