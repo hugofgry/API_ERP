@@ -42,3 +42,4 @@ def generate_passkey(length=12):
                 and any(c in string.punctuation for c in passkey)):
             return passkey
 
+print(secure.generate_token("testuser"))
