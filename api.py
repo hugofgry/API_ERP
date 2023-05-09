@@ -29,7 +29,7 @@ def get_external_api_data(url: str):
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+return {"Hello": "World"}
 
 @app.get("/hello")
 def read_root():
