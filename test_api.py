@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 import pytest
 import httpx
-import api  # Assurez-vous d'importer le bon fichier
+from api import app  # Assurez-vous d'importer le bon fichier
 from pydantic import BaseModel
 import secure
 
@@ -28,8 +28,8 @@ def test_send_qr_invalid_credentials(monkeypatch):
     def mock_get_user_pwd(username):
         return ("hashed_password",)
 
-    monkeypatch.setattr("main.db.get_user_pwd", mock_get_user_pwd)
-    monkeypatch.setattr("main.secure.verify_pwd", lambda pwd, hashed: False)
+    monkeypatch.setattr("db.get_user_pwd", mock_get_user_pwd)
+    monkeypatch.setattr("secure.verify_pwd", lambda pwd, hashed: False)
 
     response = client.post("/send_qr", json={"username": "user", "pwd": "invalid_pwd"})
     assert response.status_code == 401
@@ -43,8 +43,8 @@ async def test_get_product(monkeypatch):
     async def mock_get_external_api_data(url):
         return [{"id": "1", "name": "Product 1", "price": "50"}]
 
-    monkeypatch.setattr("main.secure.verify_jwt_token", mock_verify_jwt_token)
-    monkeypatch.setattr("main.get_external_api_data", mock_get_external_api_data)
+    monkeypatch.setattr("secure.verify_jwt_token", mock_verify_jwt_token)
+    monkeypatch.setattr("api.get_external_api_data", mock_get_external_api_data)
 
     async with httpx.AsyncClient(app=app) as ac:
         response = await ac.get("/products")
@@ -56,7 +56,7 @@ async def test_validate_token(monkeypatch):
     def mock_get_user_by_token(token):
         return {"username": "user"}
 
-    monkeypatch.setattr("main.db.get_user_by_token", mock_get_user_by_token)
+    monkeypatch.setattr("db.get_user_by_token", mock_get_user_by_token)
 
     token = secure.generate_token("user")
     headers = {"Authorization": f"Bearer {token}"}
@@ -91,8 +91,8 @@ async def test_get_product_by_id(monkeypatch):
         product_id = url.split("/")[-1]
         return create_mock_product_data(product_id)
 
-    monkeypatch.setattr("main.secure.verify_jwt_token", mock_verify_jwt_token)
-    monkeypatch.setattr("main.get_external_api_data", mock_get_external_api_data)
+    monkeypatch.setattr("secure.verify_jwt_token", mock_verify_jwt_token)
+    monkeypatch.setattr("api.get_external_api_data", mock_get_external_api_data)
 
     async with httpx.AsyncClient(app=app) as ac:
         response = await ac.get("/products/1")
@@ -108,8 +108,8 @@ async def test_get_product_by_name(monkeypatch):
     def mock_get_external_api_data(url):
         return create_mock_product_data()
 
-    monkeypatch.setattr("main.secure.verify_jwt_token", mock_verify_jwt_token)
-    monkeypatch.setattr("main.get_external_api_data", mock_get_external_api_data)
+    monkeypatch.setattr("secure.verify_jwt_token", mock_verify_jwt_token)
+    monkeypatch.setattr("api.get_external_api_data", mock_get_external_api_data)
 
     async with httpx.AsyncClient(app=app) as ac:
         response = await ac.get("/products/search", params={"name": "Product 2"})
@@ -125,8 +125,8 @@ async def test_get_product_by_price(monkeypatch):
     def mock_get_external_api_data(url):
         return create_mock_product_data()
 
-    monkeypatch.setattr("main.secure.verify_jwt_token", mock_verify_jwt_token)
-    monkeypatch.setattr("main.get_external_api_data", mock_get_external_api_data)
+    monkeypatch.setattr("secure.verify_jwt_token", mock_verify_jwt_token)
+    monkeypatch.setattr("api.get_external_api_data", mock_get_external_api_data)
 
     async with httpx.AsyncClient(app=app) as ac:
         response = await ac.get("/products/search", params={"price": "100"})
@@ -139,7 +139,7 @@ async def test_validate_token_invalid_token(monkeypatch):
     def mock_get_user_by_token(token):
         return None
 
-    monkeypatch.setattr("main.db.get_user_by_token", mock_get_user_by_token)
+    monkeypatch.setattr("db.get_user_by_token", mock_get_user_by_token)
 
     invalid_token = "invalid_token"
     headers = {"Authorization": f"Bearer {invalid_token}"}
