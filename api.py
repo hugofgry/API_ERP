@@ -67,29 +67,29 @@ async def validate_token(authorization: str = Header(...)):
         raise HTTPException(status_code=401, detail="Invalid token.")
     return {"token": token}
 
-@app.get("/products/{product_id}")
-async def get_product_by_id(product_id: int, token_data: TokenData = Depends(secure.verify_jwt_token)):
-    url = f"https://615f5fb4f7254d0017068109.mockapi.io/api/v1/products/{product_id}"
-    data = get_external_api_data(url)
-    return data
 
-
-@app.get("/products/search/{name}{price}")
-async def get_product_by(name: Optional[str] = None, price: Optional[str] = None, token_data: TokenData = Depends(secure.verify_jwt_token)):
+@app.get("/products/search/{name}")
+async def get_product_by(name: Optional[str] = None, token_data: TokenData = Depends(secure.verify_jwt_token)):
     url = f"https://615f5fb4f7254d0017068109.mockapi.io/api/v1/products/"
     data = get_external_api_data(url)
-
     items = []
-
     if name is not None:
         for element in data:
-            if element["name"] == name:
-                items.append(element)
-
-    elif price is not None:
-        for element in data:
-            if element["price"] == price:
-                items.append(element)
+            if element["name"] == name: items.append(element)
 
     return items
+
+@app.get("/products/searchP/{price}")
+async def get_product_by(price: Optional[str] = None, token_data: TokenData = Depends(secure.verify_jwt_token)):
+    url = f"https://615f5fb4f7254d0017068109.mockapi.io/api/v1/products/"
+    data = get_external_api_data(url)
+    itemsP = []
+    
+    if price is not None:
+        for element in data:
+            if element["details"]["price"] == price:
+                itemsP.append(element)
+
+    return itemsP
+
 
