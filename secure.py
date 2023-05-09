@@ -49,8 +49,8 @@ def verify_jwt_token(authorization: str = Header(...)) -> TokenData:
         raise HTTPException(status_code=401, detail="Invalid JWT signature")
     except pyjwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Invalid JWT token")
+    return token_datax
 
-####
 def hash_pwd(pwd: str) -> str:
     ph = argon2.PasswordHasher()
     return ph.hash(pwd)
