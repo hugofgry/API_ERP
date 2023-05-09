@@ -1,6 +1,6 @@
 import datetime
 import db
-from argon2 import PasswordHasher
+import argon2
 import jwt as pyjwt
 from pydantic import BaseModel
 from fastapi import FastAPI, Depends, HTTPException, Header
@@ -52,12 +52,12 @@ def verify_jwt_token(authorization: str = Header(...)) -> TokenData:
 
 
 def hash_pwd(pwd: str) -> str:
-    ph = PasswordHasher()
+    ph = argon2.PasswordHasher()
     return ph.hash(pwd)
 
 
 def verify_pwd(user_pwd: str, hashed_pwd_from_db: str) -> bool:
-    ph = PasswordHasher()
+    ph = argon2.PasswordHasher()
     try:
         ph.verify(hashed_pwd_from_db, user_pwd)
         return True
