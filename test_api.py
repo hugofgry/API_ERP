@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 import pytest
 import httpx
-from main import app  # Assurez-vous d'importer le bon fichier
+from main import api  # Assurez-vous d'importer le bon fichier
 from pydantic import BaseModel
 import secure
 
