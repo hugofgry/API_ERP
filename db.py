@@ -1,5 +1,5 @@
 import psycopg2 as psy
-from datetime import datetime, timedelta
+from datetime import datetime
 import secure
 
 def set_connection():
