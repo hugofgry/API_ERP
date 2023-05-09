@@ -69,7 +69,7 @@ async def get_product_by_id(product_id: int, token_data: TokenData = Depends(sec
     return data
 
 
-@app.get("/products/search/{string}")
+@app.get("/products/search/{name}{price}")
 async def get_product_by(name: str, price:str, token_data: TokenData = Depends(secure.verify_jwt_token)):
     url = f"https://615f5fb4f7254d0017068109.mockapi.io/api/v1/products/"
     data = get_external_api_data(url)
