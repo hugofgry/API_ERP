@@ -1,0 +1,58 @@
+name: Run Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+
+    - name: Start API server
+      run: |
+        uvicorn api:app --host 127.0.0.1 --port 8080 &
+        echo "API_PID=$!" >> $GITHUB_ENV
+      env:
+        TOK: ${{ secrets.TOK }}
+        JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+
+    - name: Run tests
+      run: |
+
+        pytest
+      env:
+        TOK: ${{ secrets.TOK }}
+        JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+
+    - name: Stop API server
+      run: |
+        kill $API_PID
+
+    - name: Set up Heroku CLI
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Install Heroku CLI
+      run: |
+        curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
+    - name: Login to Heroku
+      uses: akhileshns/heroku-deploy@v3.12.12 # Utilisation du plug-in Heroku Actions
+      with:
+        heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+        heroku_app_name: "apiepsierp"
+        heroku_email: "hugo.fugeray@gmail.com"
+    - name: Deploy to Heroku
+      run: |
+        heroku git:remote -a apiepsierp
+        git push heroku main
