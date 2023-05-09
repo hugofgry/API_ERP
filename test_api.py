@@ -5,6 +5,9 @@ from api import app  # Assurez-vous d'importer le bon fichier
 from pydantic import BaseModel
 import secure
 
+API_V1_STR = "http://127.0.0.1:8000/"
+
+
 client = TestClient(app)
 
 class MockResponse:
@@ -47,7 +50,7 @@ async def test_get_product(monkeypatch):
     monkeypatch.setattr("api.get_external_api_data", mock_get_external_api_data)
 
     async with httpx.AsyncClient(app=app) as ac:
-        response = await ac.get("/products")
+        response = await ac.get(API_V1_STR + "/products")
     assert response.status_code == 200
     assert response.json() == [{"id": "1", "name": "Product 1", "price": "50"}]
 
@@ -61,7 +64,7 @@ async def test_validate_token(monkeypatch):
     token = secure.generate_token("user")
     headers = {"Authorization": f"Bearer {token}"}
     async with httpx.AsyncClient(app=app) as ac:
-        response = await ac.get("/validate-token", headers=headers)
+        response = await ac.get(API_V1_STR + "/validate-token", headers=headers)
     assert response.status_code == 200
     assert response.json() == {"token": token}
 
@@ -95,7 +98,7 @@ async def test_get_product_by_id(monkeypatch):
     monkeypatch.setattr("api.get_external_api_data", mock_get_external_api_data)
 
     async with httpx.AsyncClient(app=app) as ac:
-        response = await ac.get("/products/1")
+        response = await ac.get(API_V1_STR + "/products/1")
     assert response.status_code == 200
     assert response.json() == {"id": "1", "name": "Product 1", "price": "50"}
 
@@ -112,7 +115,7 @@ async def test_get_product_by_name(monkeypatch):
     monkeypatch.setattr("api.get_external_api_data", mock_get_external_api_data)
 
     async with httpx.AsyncClient(app=app) as ac:
-        response = await ac.get("/products/search", params={"name": "Product 2"})
+        response = await ac.get(API_V1_STR + "/products/search", params={"name": "Product 2"})
     assert response.status_code == 200
     assert response.json() == [{"id": "2", "name": "Product 2", "price": "75"}]
 
@@ -129,7 +132,7 @@ async def test_get_product_by_price(monkeypatch):
     monkeypatch.setattr("api.get_external_api_data", mock_get_external_api_data)
 
     async with httpx.AsyncClient(app=app) as ac:
-        response = await ac.get("/products/search", params={"price": "100"})
+        response = await ac.get(API_V1_STR + "/products/search", params={"price": "100"})
     assert response.status_code == 200
     assert response.json() == [{"id": "3", "name": "Product 3", "price": "100"}]
 
@@ -144,5 +147,5 @@ async def test_validate_token_invalid_token(monkeypatch):
     invalid_token = "invalid_token"
     headers = {"Authorization": f"Bearer {invalid_token}"}
     async with httpx.AsyncClient(app=app) as ac:
-        response = await ac.get("/validate-token", headers=headers)
+        response = await ac.get(API_V1_STR + "/validate-token", headers=headers)
     assert response.status
