@@ -9,3 +9,6 @@ requests
 uvicorn
 qrcode
 Pillow
+pytest
+httpx
+pytest-asyncio

@@ -13,9 +13,11 @@ from typing import Optional
 app = FastAPI()
 security = HTTPBearer()
 
+
 class SendQRRequest(BaseModel):
     username: str
     pwd: str
+
 
 def get_external_api_data(url: str):
     response = requests.get(url)
@@ -24,6 +26,7 @@ def get_external_api_data(url: str):
         return data
     else:
         raise HTTPException(status_code=500, detail="Unable to fetch data from external API")
+
 
 @app.get("/")
 def read_root():
