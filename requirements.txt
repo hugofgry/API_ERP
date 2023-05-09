@@ -12,3 +12,4 @@ Pillow
 pytest
 httpx
 pytest-asyncio
+argon2-cffi
