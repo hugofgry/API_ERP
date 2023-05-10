@@ -1,5 +1,7 @@
 import psycopg2 as psy
 from datetime import datetime
+
+import db
 from secure import hash_pwd
 import os
 
@@ -102,6 +104,5 @@ def get_revoke_token():
         result = cursor.fetchall()
         return result
 
-insert_user("pierrekuh@yahoo.fr","testmdp", 4)
-
+print(db.get_users())
 

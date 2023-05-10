@@ -63,7 +63,7 @@ async def validate_token(authorization: str = Header(...)):
         raise HTTPException(status_code=401, detail="Invalid authorization header format.")
     user = db.get_user_by_token(token)
     if user is None:
-        raise HTTPException(status_code=401, detail="Invalid token.")
+        raise HTTPException(status_code=705, detail="Invalid token. test pierre")
     return {"token": token}
 
 
