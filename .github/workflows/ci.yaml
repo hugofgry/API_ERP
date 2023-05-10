@@ -25,7 +25,7 @@ jobs:
         echo "API_PID=$!" >> $GITHUB_ENV
       env:
         TOK: ${{ secrets.TOK }}
-        JWT_SECRET_KEY: ${{ secrets.DB_PWD }}
+        DB_PWD: ${{ secrets.DB_PWD }}
 
     - name: Run tests
       run: |
@@ -33,7 +33,7 @@ jobs:
         pytest
       env:
         TOK: ${{ secrets.TOK }}
-        JWT_SECRET_KEY: ${{ secrets.DB_PWD }}
+        DB_PWD: ${{ secrets.DB_PWD }}
 
     - name: Stop API server
       run: |
