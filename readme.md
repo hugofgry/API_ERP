@@ -42,9 +42,6 @@ Voici les points de terminaison disponibles dans l'API :
 
 / (GET): Renvoie un message "Hello World".
 
-/send_qr (POST): Génère un code QR à partir des informations d'identification de l'utilisateur et l'envoie 
-par e-mail.
-
 /products (GET): Récupère les données des produits à partir d'une API externe.
 
 /validate-token (GET): Valide un jeton JWT.
@@ -52,6 +49,11 @@ par e-mail.
 /products/{product_id} (GET): Récupère les données d'un produit spécifique à partir d'une API externe.
 
 /products/search/{name}{price} (GET): Recherche des produits par nom ou par prix.
+
+/send_qr (POST): Génère un code QR à partir des informations d'identification de l'utilisateur et l'envoie 
+par e-mail.
+
+/revoke_token (POST): Permet de révoquer un token.
 
 ## Tests
 
