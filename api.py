@@ -17,6 +17,7 @@ class SendQRRequest(BaseModel):
     username: str
     pwd: str
 
+
 class SendRevoke(BaseModel):
     token: str
 
@@ -56,7 +57,7 @@ async def get_product_by_id(product_id: int, token_data: TokenData = Depends(sec
 async def validate_token(token_data: TokenData = Depends(secure.verify_jwt_token)):
 
     # Vérifiez si le jeton est révoqué
-    revoked_token = db.check_revoked_token(token_data)
+    revoked_token = db.check_revoked_token(token_data.sub.split(" ")[1])
     if revoked_token:
         raise HTTPException(status_code=401, detail="Token has been revoked")
 
