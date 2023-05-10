@@ -3,6 +3,9 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from io import BytesIO
+import os
+
+
 
 def send_email(qr_code,receiver_email):
 
@@ -13,7 +16,9 @@ def send_email(qr_code,receiver_email):
     img_data = img_buf.getvalue()
 
     gmail_user = "payetonkawadeveloppeurs@gmail.com"
-    gmail_password = "jvgxdzpyebfsjhde"
+    gmail_password = os.environ.get("GMAILPWD")
+    if not isinstance(gmail_password, str):
+        pass_phrase = str(gmail_password)
 
     try:
         msg = MIMEMultipart()
