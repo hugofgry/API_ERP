@@ -109,7 +109,7 @@ async def send_qr(request: SendQRRequest):
     return "Email sent"
 
 @app.post("/revoke_token")
-async def send_qr(request: SendRevoke):
+async def revoke_token(request: SendRevoke):
     token = request.token
     try:
         db.revoke_token(token)
