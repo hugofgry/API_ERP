@@ -54,7 +54,7 @@ async def get_product_by_id(product_id: int, token_data: TokenData = Depends(sec
 
 
 @app.get("/validate-token")
-async def validate_token(token_data: TokenData = Depends(secure.verify_jwt_token)):
+async def validate_token(header: str = Header(...), token_data: TokenData = Depends(secure.verify_jwt_token)):
 
     # Vérifiez si le jeton est révoqué
     print(token_data.sub)
@@ -62,7 +62,7 @@ async def validate_token(token_data: TokenData = Depends(secure.verify_jwt_token
     if revoked_token:
         raise HTTPException(status_code=401, detail="Token has been revoked")
 
-    return {"token": token_data}
+    return {"token": header.split(" ")[1]}
 
 
 @app.get("/products/search/{name}")
