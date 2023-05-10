@@ -1,6 +1,6 @@
 ## Api ERP
 
-# Projet API de génération de QR Code
+# Documentation
 
 Le projet est une API construite avec FastAPI pour générer des QR Codes à partir des informations d'identification de l'utilisateur, envoyer les QR Codes par e-mail et effectuer diverses opérations sur les produits.
 
