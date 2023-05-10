@@ -3,7 +3,7 @@ from datetime import datetime
 import secure
 import os
 
-DB_PWD = os.environ.get("DB_PWD")
+DB_PWD = os.environ["DB_PWD"]
 if not isinstance(DB_PWD, str):
         token = str(DB_PWD)
 
