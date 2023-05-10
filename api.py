@@ -65,6 +65,7 @@ async def get_product_by_id(product_id: int, token_data: TokenData = Depends(sec
 
 @app.get("/validate-token")
 async def validate_token(authorization: str = Header(...)):
+
     try:
         scheme, token = authorization.split(" ")
         if scheme.lower() != "bearer":

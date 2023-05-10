@@ -38,10 +38,17 @@ def generate_token(username: str) -> str:
     return token
 
 
+
 def verify_jwt_token(authorization: str = Header(...)) -> TokenData:
     try:
         token = authorization.split(" ")[1]
         payload = pyjwt.decode(token, pass_phrase, algorithms="HS256")
+
+        # Vérifiez si le jeton est révoqué
+        revoked_token = db.check_revoked_token(token)
+        if revoked_token:
+            raise HTTPException(status_code=401, detail="Token has been revoked")
+
         # Reste de la fonction
         user_id = payload.get("sub")
         if user_id is None:

@@ -1,10 +1,16 @@
 import psycopg2 as psy
 from datetime import datetime
 import secure
+import os
 
+DB_PWD = os.environ.get("DB_PWD")
+if not isinstance(DB_PWD, str):
+        token = str(DB_PWD)
+
+print(DB_PWD)
 ###
 def set_connection():
-    connection = psy.connect('postgres://testneon33:dfkFh5jcr1Tw@ep-hidden-forest-997741.eu-central-1.aws.neon.tech/neondb?sslmode=require')
+    connection = psy.connect(f'postgres://testneon33:{DB_PWD}@ep-hidden-forest-997741.eu-central-1.aws.neon.tech/neondb?sslmode=require')
     connection.set_session(autocommit=True)
     return connection
 
@@ -32,6 +38,17 @@ def insert_user(username, pwd, role):
         user
         )
 
+def revoke_token(token: str):
+   with DatabaseConnection() as cursor:
+        cursor.execute(
+        """
+        INSERT INTO Revoked_tokens (token)
+        VALUES (%s)
+        """,
+        token
+        )
+
+
 # READ----------------------------------------------------------------
 def get_user_pwd(username):
     with DatabaseConnection() as cursor:
@@ -51,6 +68,15 @@ def get_user_by_token(token):
         user = cursor.fetchone()
     return user
 
+def check_revoked_token(token):
+    with DatabaseConnection() as cursor:
+        cursor.execute("""SELECT * FROM Revoked_tokens WHERE token = %s""", (token,))
+        revoked_token = cursor.fetchone()
+        if len(revoked_token) == 1:
+            return True
+        else:
+            return False
+
 # UPDATE----------------------------------------------------------------
 def add_user_token(username, token):
     with DatabaseConnection() as cursor:
@@ -65,3 +91,18 @@ def delete_user(username):
             WHERE username = %s""",
             (str(username),)
         )
+
+
+
+def create_table_revoked_token():
+    with DatabaseConnection() as cursor:
+        cursor.execute(
+            """
+            CREATE TABLE Revoked_tokens (
+                id SERIAL PRIMARY KEY,
+                token TEXT);
+            """
+        )
+
+create_table_revoked_token()
+revoke_token("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJsYW1yYW5pMDAyQGdtYWlsLmNvbSIsImV4cCI6MTY4NDkzMjU2OX0.vASLfRbseVrGn9k7t4FiBxy8caoW_vurWFKeonUN7HM")
