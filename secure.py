@@ -8,10 +8,11 @@ import os
 import secrets
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
 
+import secure
 
 TOKEN_EXPIRATION_TIME = datetime.timedelta(days=14)
 
-pass_phrase = os.environ.get("TOKEN_API_CRM")
+pass_phrase = os.environ.get("PASSPHRASE_API_CRM")
 if not isinstance(pass_phrase, str):
         pass_phrase = str(pass_phrase)
 
@@ -67,7 +68,6 @@ def verify_pwd(user_pwd: str, hashed_pwd_from_db: str) -> bool:
         return True
     except:
         return False
-
 
 
 
