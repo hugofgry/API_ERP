@@ -2,6 +2,7 @@ import psycopg2 as psy
 from datetime import datetime
 import secure
 
+###
 def set_connection():
     connection = psy.connect('postgres://testneon33:dfkFh5jcr1Tw@ep-hidden-forest-997741.eu-central-1.aws.neon.tech/neondb?sslmode=require')
     connection.set_session(autocommit=True)
