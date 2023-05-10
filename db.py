@@ -80,7 +80,7 @@ def check_revoked_token(token):
 # UPDATE----------------------------------------------------------------
 def add_user_token(username, token):
     with DatabaseConnection() as cursor:
-        cursor.execute("""UPDATE Users SET user_token = %s WHERE username = %s """, (secure.hash(str(token)), str(username)))
+        cursor.execute("""UPDATE Users SET user_token = %s WHERE username = %s """, (secure.hash_pwd(str(token)), str(username)))
 
 # DELETE----------------------------------------------------------------
 def delete_user(username):
