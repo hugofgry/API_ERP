@@ -27,7 +27,7 @@ class DatabaseConnection:
 # CREATE----------------------------------------------------------------
 def insert_user(username, pwd, role):
     with DatabaseConnection() as cursor:
-        pwd = secure.hash_pwd(pwd)
+        pwd = hash_pwd(pwd)
         user = (username, pwd, role, datetime.now())
         cursor.execute(
         """
@@ -70,7 +70,7 @@ def get_user_by_token(token):
 
 def check_revoked_token(token):
     with DatabaseConnection() as cursor:
-        cursor.execute("""SELECT * FROM Revoked_tokens WHERE token = %s""", (secure.hash_pwd(token),))
+        cursor.execute("""SELECT * FROM Revoked_tokens WHERE token = %s""", (hash_pwd(token),))
         revoked_token = cursor.fetchone()
         if isinstance(revoked_token, tuple):
             return True
@@ -80,7 +80,7 @@ def check_revoked_token(token):
 # UPDATE----------------------------------------------------------------
 def add_user_token(username, token):
     with DatabaseConnection() as cursor:
-        cursor.execute("""UPDATE Users SET user_token = %s WHERE username = %s """, (secure.hash_pwd(str(token)), str(username)))
+        cursor.execute("""UPDATE Users SET user_token = %s WHERE username = %s """, (hash_pwd(str(token)), str(username)))
 
 # DELETE----------------------------------------------------------------
 def delete_user(username):

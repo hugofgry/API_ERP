@@ -8,7 +8,6 @@ import secrets
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
 import db
 
-import secure
 
 TOKEN_EXPIRATION_TIME = datetime.timedelta(days=14)
 
