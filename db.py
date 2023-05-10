@@ -3,14 +3,12 @@ from datetime import datetime
 import secure
 import os
 
-DB_PWD = os.environ["DB_PWD"]
+DB_PWD = os.environ.get(("DB_PWD"))
 if not isinstance(DB_PWD, str):
         token = str(DB_PWD)
-
-print(DB_PWD)
 ###
 def set_connection():
-    connection = psy.connect(f'postgres://testneon33:{DB_PWD}@ep-hidden-forest-997741.eu-central-1.aws.neon.tech/neondb?sslmode=require')
+    connection = psy.connect(f'postgres://testneon33:dfkFh5jcr1Tw@ep-hidden-forest-997741.eu-central-1.aws.neon.tech/neondb?sslmode=require')
     connection.set_session(autocommit=True)
     return connection
 
@@ -25,6 +23,7 @@ class DatabaseConnection:
         self.cursor.close()
         self.conn.close()
 
+
 # CREATE----------------------------------------------------------------
 def insert_user(username, pwd, role):
     with DatabaseConnection() as cursor:
@@ -38,6 +37,7 @@ def insert_user(username, pwd, role):
         user
         )
 
+
 def revoke_token(token: str):
    with DatabaseConnection() as cursor:
         cursor.execute(
@@ -45,7 +45,7 @@ def revoke_token(token: str):
         INSERT INTO Revoked_tokens (token)
         VALUES (%s)
         """,
-        token
+            (token,)
         )
 
 
@@ -72,7 +72,7 @@ def check_revoked_token(token):
     with DatabaseConnection() as cursor:
         cursor.execute("""SELECT * FROM Revoked_tokens WHERE token = %s""", (token,))
         revoked_token = cursor.fetchone()
-        if len(revoked_token) == 1:
+        if isinstance(revoked_token, tuple):
             return True
         else:
             return False
@@ -91,6 +91,16 @@ def delete_user(username):
             WHERE username = %s""",
             (str(username),)
         )
+
+def get_revoke_token():
+    with DatabaseConnection() as cursor:
+        cursor.execute(
+            """
+            Select * From Revoked_tokens
+            
+            """)
+        result = cursor.fetchall()
+        return result
 
 
 

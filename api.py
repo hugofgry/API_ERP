@@ -17,6 +17,10 @@ class SendQRRequest(BaseModel):
     username: str
     pwd: str
 
+class SendRevoke(BaseModel):
+    token: str
+
+
 
 def get_external_api_data(url: str):
     response = requests.get(url)
@@ -31,21 +35,6 @@ def get_external_api_data(url: str):
 def read_root():
     return {"Hello": "World"}
 
-
-
-@app.post("/send_qr")
-async def send_qr(request: SendQRRequest):
-    pwd_in_db = db.get_user_pwd(request.username)[0]
-
-    # Vérifier que les informations d'identification sont valides
-    if not secure.verify_pwd(request.pwd, pwd_in_db):
-        raise HTTPException(status_code=401, detail="Nom d'utilisateur ou mot de passe incorrect")
-    else:
-        token = secure.generate_token(request.username)
-        qr = qr_code.create_qr_code(token)
-        mail.send_email(qr, f"{request.username}")
-
-    return "Email sent"
 
 
 # Endpoint protégé par un jeton
@@ -102,5 +91,32 @@ async def get_product_by(price: Optional[str] = None, token_data: TokenData = De
                 itemsP.append(element)
 
     return itemsP
+
+
+
+@app.post("/send_qr")
+async def send_qr(request: SendQRRequest):
+    pwd_in_db = db.get_user_pwd(request.username)[0]
+
+    # Vérifier que les informations d'identification sont valides
+    if not secure.verify_pwd(request.pwd, pwd_in_db):
+        raise HTTPException(status_code=401, detail="Nom d'utilisateur ou mot de passe incorrect")
+    else:
+        token = secure.generate_token(request.username)
+        qr = qr_code.create_qr_code(token)
+        mail.send_email(qr, f"{request.username}")
+
+    return "Email sent"
+
+@app.post("/revoke_token")
+async def send_qr(request: SendRevoke):
+    token = request.token
+    try:
+        db.revoke_token(token)
+        return f"token {token} revoked"
+    except:
+        return "Erreur lors de la révocation du token"
+
+
 
 
