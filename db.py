@@ -1,5 +1,8 @@
 import psycopg2 as psy
 from datetime import datetime
+
+import db
+import secure
 from secure import hash_pwd
 import os
 
@@ -62,11 +65,12 @@ def get_users():
         result = cursor.fetchall()
     return result
 
-def get_user_by_token(token):
+
+def get_user_token(username):
     with DatabaseConnection() as cursor:
-        cursor.execute("""SELECT * FROM Users WHERE user_token = %s""", (hash_pwd(token),))
-        user = cursor.fetchone()
-    return user
+        cursor.execute("""SELECT user_token FROM Users WHERE username = %s""", (str(username),))
+        user_token = cursor.fetchone()
+        return user_token
 
 def check_revoked_token(token):
     with DatabaseConnection() as cursor:
