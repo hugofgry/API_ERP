@@ -66,7 +66,7 @@ def get_users():
 
 def get_user_by_token(token):
     with DatabaseConnection() as cursor:
-        cursor.execute("""SELECT * FROM Users WHERE user_token = %s""", (token,))
+        cursor.execute("""SELECT * FROM Users WHERE user_token = %s""", (hash_pwd(token),))
         user = cursor.fetchone()
     return user
 
