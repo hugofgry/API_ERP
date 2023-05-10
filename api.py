@@ -62,7 +62,7 @@ async def validate_token(token_data: TokenData = Depends(secure.verify_jwt_token
     if revoked_token:
         raise HTTPException(status_code=401, detail="Token has been revoked")
 
-    return {"token": token}
+    return {"token": token_data}
 
 
 @app.get("/products/search/{name}")
