@@ -47,12 +47,21 @@ async def send_qr(request: SendQRRequest):
 
     return "Email sent"
 
+
 # Endpoint protégé par un jeton
 @app.get("/products")
 async def get_product(token_data: TokenData = Depends(secure.verify_jwt_token)):
     url = "https://615f5fb4f7254d0017068109.mockapi.io/api/v1/products"
     data = get_external_api_data(url)
     return data
+
+
+@app.get("/products/{product_id}")
+async def get_product_by_id(product_id: int, token_data: TokenData = Depends(secure.verify_jwt_token)):
+    url = f"https://615f5fb4f7254d0017068109.mockapi.io/api/v1/products/{product_id}"
+    data = get_external_api_data(url)
+    return data
+
 
 @app.get("/validate-token")
 async def validate_token(authorization: str = Header(...)):
@@ -79,12 +88,13 @@ async def get_product_by(name: Optional[str] = None, token_data: TokenData = Dep
 
     return items
 
+
 @app.get("/products/searchP/{price}")
 async def get_product_by(price: Optional[str] = None, token_data: TokenData = Depends(secure.verify_jwt_token)):
     url = f"https://615f5fb4f7254d0017068109.mockapi.io/api/v1/products/"
     data = get_external_api_data(url)
     itemsP = []
-    
+
     if price is not None:
         for element in data:
             if element["details"]["price"] == price:
