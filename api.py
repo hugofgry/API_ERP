@@ -103,6 +103,9 @@ async def send_qr(request: SendQRRequest):
         raise HTTPException(status_code=401, detail="Nom d'utilisateur ou mot de passe incorrect")
     else:
         token = secure.generate_token(request.username)
+        # Stocker le jeton dans la db
+        db.add_user_token(request.username, token)
+
         qr = qr_code.create_qr_code(token)
         mail.send_email(qr, f"{request.username}")
 

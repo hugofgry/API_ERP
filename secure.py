@@ -6,7 +6,6 @@ from fastapi import FastAPI, Depends, HTTPException, Header
 import os
 import secrets
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
-import db
 
 
 TOKEN_EXPIRATION_TIME = datetime.timedelta(days=14)
@@ -36,8 +35,6 @@ def generate_token(username: str) -> str:
     # Créer le jeton JWT en signant la charge utile avec la clé secrète
     token = pyjwt.encode(payload, pass_phrase, algorithm="HS256")
 
-    # Stocker le jeton dans la db
-    db.add_user_token(username,token)
 
     # Retourner le jeton en tant que chaîne de caractères
     return token

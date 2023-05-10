@@ -1,7 +1,5 @@
 import psycopg2 as psy
 from datetime import datetime
-
-import db
 from secure import hash_pwd
 import os
 
@@ -47,7 +45,7 @@ def revoke_token(token: str):
         INSERT INTO Revoked_tokens (token)
         VALUES (%s)
         """,
-            (token,)
+            (hash_pwd(token),)
         )
 
 
@@ -104,5 +102,4 @@ def get_revoke_token():
         result = cursor.fetchall()
         return result
 
-print(db.get_users())
 
