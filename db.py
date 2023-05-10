@@ -1,6 +1,6 @@
 import psycopg2 as psy
 from datetime import datetime
-import secure
+from secure import hash_pwd
 import os
 
 DB_PWD = os.environ.get(("DB_PWD"))
@@ -70,7 +70,7 @@ def get_user_by_token(token):
 
 def check_revoked_token(token):
     with DatabaseConnection() as cursor:
-        cursor.execute("""SELECT * FROM Revoked_tokens WHERE token = %s""", (secure.hash(token),))
+        cursor.execute("""SELECT * FROM Revoked_tokens WHERE token = %s""", (secure.hash_pwd(token),))
         revoked_token = cursor.fetchone()
         if isinstance(revoked_token, tuple):
             return True
@@ -102,5 +102,6 @@ def get_revoke_token():
         result = cursor.fetchall()
         return result
 
+insert_user("pierrekuh@yahoo.fr","testmdp", 4)
 
 

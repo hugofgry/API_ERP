@@ -1,5 +1,4 @@
 import datetime
-import db
 import argon2
 import jwt as pyjwt
 from pydantic import BaseModel
@@ -7,6 +6,7 @@ from fastapi import FastAPI, Depends, HTTPException, Header
 import os
 import secrets
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
+import db
 
 import secure
 
@@ -20,6 +20,12 @@ if not isinstance(pass_phrase, str):
 
 class TokenData(BaseModel):
     sub: str
+
+
+def hash_pwd(pwd: str) -> str:
+    ph = argon2.PasswordHasher()
+    return ph.hash(pwd)
+
 
 def generate_token(username: str) -> str:
     # Définir la date d'expiration du jeton
@@ -36,7 +42,6 @@ def generate_token(username: str) -> str:
 
     # Retourner le jeton en tant que chaîne de caractères
     return token
-
 
 
 def verify_jwt_token(authorization: str = Header(...)) -> TokenData:
@@ -62,10 +67,6 @@ def verify_jwt_token(authorization: str = Header(...)) -> TokenData:
     except pyjwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Invalid JWT token")
     return token_datax
-
-def hash_pwd(pwd: str) -> str:
-    ph = argon2.PasswordHasher()
-    return ph.hash(pwd)
 
 
 def verify_pwd(user_pwd: str, hashed_pwd_from_db: str) -> bool:
