@@ -94,15 +94,3 @@ def delete_user(username):
 
 
 
-def create_table_revoked_token():
-    with DatabaseConnection() as cursor:
-        cursor.execute(
-            """
-            CREATE TABLE Revoked_tokens (
-                id SERIAL PRIMARY KEY,
-                token TEXT);
-            """
-        )
-
-create_table_revoked_token()
-revoke_token("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJsYW1yYW5pMDAyQGdtYWlsLmNvbSIsImV4cCI6MTY4NDkzMjU2OX0.vASLfRbseVrGn9k7t4FiBxy8caoW_vurWFKeonUN7HM")
