@@ -62,13 +62,6 @@ async def validate_token(token_data: TokenData = Depends(secure.verify_jwt_token
     if revoked_token:
         raise HTTPException(status_code=401, detail="Token has been revoked")
 
-    try:
-        scheme, token = authorization.split(" ")
-        if scheme.lower() != "bearer":
-            raise HTTPException(status_code=401, detail="Invalid authentication scheme.")
-    except ValueError:
-        raise HTTPException(status_code=401, detail="Invalid authorization header format.")
-
     return {"token": token}
 
 
