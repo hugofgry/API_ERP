@@ -70,7 +70,8 @@ async def get_product_by(name: Optional[str] = None, token_data: TokenData = Dep
     items = []
     if name is not None:
         for element in data:
-            if element["name"] == name: items.append(element)
+            if name in element["name"]  :
+                items.append(element)
 
     return items
 
