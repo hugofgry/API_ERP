@@ -3,7 +3,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 
-BASE_URL = "http://127.0.0.1:8080"
+API_BASE_URL = "http://127.0.0.1:8080"
 
 def test_read_root():
     response = httpx.get(f"{API_BASE_URL}/")
