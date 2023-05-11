@@ -2,7 +2,7 @@ import requests
 import os
 
 API_BASE_URL = "https://apiepsierp.herokuapp.com"
-VALID_TOKEN = os.env['TOKEN']
+VALID_TOKEN = os.environ['TOKEN']
 
 def test_get_products_with_valid_token_production():
     response = requests.get(
