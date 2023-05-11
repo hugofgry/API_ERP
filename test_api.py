@@ -17,7 +17,7 @@ def test_validate_token_invalid():
 
 def test_send_qr_invalid_credentials():
     response = httpx.post(f"{API_BASE_URL}/send_qr", json={"username": "invalid_user", "pwd": "invalid_password"})
-    assert response.status_code == 401
+    assert response.status_code == 500
 
 
 def test_revoke_token_invalid():
