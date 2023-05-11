@@ -1,4 +1,5 @@
 import requests
+import os
 
 API_BASE_URL = "https://apiepsierp.herokuapp.com"
 VALID_TOKEN = os.env['TOKEN']
