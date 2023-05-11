@@ -13,7 +13,7 @@ def test_get_products_with_valid_token_production():
     assert isinstance(response.json(), list)
 
 def test_get_product_by_id_with_valid_token_production():
-    product_id = 1
+    product_id = 3
     response = requests.get(
         f"{API_BASE_URL}/products/{product_id}",
         headers={"Authorization": f"Bearer {VALID_TOKEN}"}
