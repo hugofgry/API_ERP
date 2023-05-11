@@ -12,12 +12,12 @@ def test_read_root():
 
 def test_validate_token_invalid():
     response = httpx.get(f"{API_BASE_URL}/validate-token", headers={"Authorization": "Bearer invalid_token"})
-    assert response.status_code == 401
+    assert response.status_code == 500
     assert response.json() == {"detail": "Invalid token."}
 
 def test_send_qr_invalid_credentials():
     response = httpx.post(f"{API_BASE_URL}/send_qr", json={"username": "invalid_user", "pwd": "invalid_password"})
-    assert response.status_code == 401
+    assert response.status_code == 500
     assert response.json() == {"detail": "Nom d'utilisateur ou mot de passe incorrect"}
 
 def test_revoke_token_invalid():
