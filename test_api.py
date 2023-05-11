@@ -1,22 +1,26 @@
-import unittest
+import httpx
+import pytest
 from fastapi.testclient import TestClient
-from pydantic import BaseModel
-from api import app
-import os
-
-client = TestClient(app)
-token = os.environ.get("TOKENTEST_API_CRM")
-if not isinstance(token, str):
-        token = str(token)
-
-class TestAPI(unittest.TestCase):
-
-    def test_read_root(self):
-        response = client.get("/")
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"Hello": "World"})
 
 
+API_BASE_URL = "http://127.0.0.1:8080"
 
-if __name__ == '__main__':
-    unittest.main()
+def test_read_root():
+    response = httpx.get(f"{API_BASE_URL}/")
+    assert response.status_code == 200
+
+
+def test_validate_token_invalid():
+    response = httpx.get(f"{API_BASE_URL}/validate-token", headers={"Authorization": "Bearer invalid_token"})
+    assert response.status_code == 401
+
+
+def test_send_qr_invalid_credentials():
+    response = httpx.post(f"{API_BASE_URL}/send_qr", json={"username": "invalid_user", "pwd": "invalid_password"})
+    assert response.status_code == 500
+
+
+def test_revoke_token_invalid():
+    response = httpx.post(f"{API_BASE_URL}/revoke_token", json={"token": "invalid_token"})
+    assert response.status_code == 200
+
