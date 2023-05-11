@@ -1,7 +1,7 @@
 import httpx
 import pytest
 from fastapi.testclient import TestClient
-from main import app
+
 
 BASE_URL = "http://127.0.0.1:8080"
 
